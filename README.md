@@ -1,7 +1,7 @@
 # 👋 Hi there, I'm Pulkit Jain
 
 <div align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=500&size=40&pause=1000&color=4A90E2&center=true&vCenter=true&random=false&width=600&height=100&lines=AI+%26+ML+Enthusiast;Computer+Science+Student;Chess+Player;Problem+Solver" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=40&pause=1000&color=4A90E2&center=true&vCenter=true&random=false&width=600&height=100&lines=AI+%26+ML+Enthusiast;Computer+Science+Student;Chess+Player;Problem+Solver" alt="Typing SVG" />
 </div>
 
 ## 🚀 About Me
@@ -43,18 +43,18 @@
 
 <div align="center">
   <a href="https://github.com/pulkit230405/stock-market-prediction">
-    <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=pulkit230405&repo=stock-market-prediction&theme=radical" />
+    <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=pulkit230405&repo=stock-market-prediction&theme=radical&hide_border=true" />
   </a>
   <a href="https://github.com/pulkit230405/chess-engine">
-    <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=pulkit230405&repo=chess-engine&theme=radical" />
+    <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=pulkit230405&repo=chess-engine&theme=radical&hide_border=true" />
   </a>
 </div>
 
 ## 📊 GitHub Stats
 
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=pulkit230405&show_icons=true&theme=radical" alt="GitHub Stats" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=pulkit230405&theme=radical" alt="GitHub Streak" />
+  <img src="https://github-readme-stats.vercel.app/api?username=pulkit230405&show_icons=true&theme=radical&hide_border=true&include_all_commits=true&count_private=true" alt="GitHub Stats" />
+  <img src="https://streak-stats.demolab.com/?user=pulkit230405&theme=radical&hide_border=true" alt="GitHub Streak" />
 </div>
 
 ## 🏅 Achievements
@@ -84,7 +84,7 @@
 ## 📈 Activity Graph
 
 <div align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=pulkit230405&theme=radical" alt="Activity Graph" />
+  <img src="https://github-readme-activity-graph.cyclic.app/graph?username=pulkit230405&theme=radical&hide_border=true" alt="Activity Graph" />
 </div>
 
 ## 🎯 Current Focus
@@ -101,5 +101,5 @@
 - 💼 Open to: Internships, Collaborations, and Research Opportunities
 
 <div align="center">
-  <img src="https://komarev.com/ghpvc/?username=pulkit230405&style=flat-square&color=blue" alt="Profile Views" />
+  <img src="https://profile-counter.glitch.me/pulkit230405/count.svg" alt="Profile Views" />
 </div>
