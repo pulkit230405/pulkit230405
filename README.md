@@ -57,6 +57,12 @@
   <img src="https://streak-stats.demolab.com/?user=pulkit230405&theme=radical&hide_border=true" alt="GitHub Streak" />
 </div>
 
+## 📊 GitHub Contribution Calendar
+
+<p align="center">
+  <img src="https://ghchart.rshah.org/4A90E2/pulkit230405" alt="Pulkit Jain's Github chart" />
+</p>
+
 ## 🏅 Achievements
 
 - 🥉 2nd Runner-up at National Mathematics Day event
@@ -81,11 +87,11 @@
   </a>
 </div>
 
-## 📈 Activity Graph
+## 🏆 GitHub Trophies
 
-<div align="center">
-  <img src="https://github-readme-activity-graph.cyclic.app/graph?username=pulkit230405&theme=radical&hide_border=true" alt="Activity Graph" />
-</div>
+<p align="center">
+  <img src="https://github-profile-trophy.vercel.app/?username=pulkit230405&theme=radical&no-frame=true&margin-w=10" alt="GitHub Trophies" />
+</p>
 
 ## 🎯 Current Focus
 
