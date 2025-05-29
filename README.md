@@ -9,7 +9,7 @@
 - 🎓 Third-year Computer Science (AI) student at Marwadi University
 - 🤖 Passionate about AI, Machine Learning, and Data Science
 - ♟️ Core team member of the university Chess Club
-- 📊 Completed 7+ projects in ML, AI and 
+- 📊 Completed 7+ projects in ML, AI and Analytics
 - 🔍 IEEE member with a keen interest in technology innovation
 
 ## 🛠️ Tech Stack
