@@ -1,4 +1,4 @@
-# 👋 Hi there, I'm Pulkit Jainn
+# 👋 Hi there, I'm Pulkit Jain
 
 <div align="center">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=40&pause=1000&color=4A90E2&center=true&vCenter=true&random=false&width=600&height=100&lines=AI+%26+ML+Enthusiast;Computer+Science+Student;Chess+Player;Problem+Solver" alt="Typing SVG" />
