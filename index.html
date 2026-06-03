@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulkit Jain — AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root {
+  --bg:      #05080f;
+  --bg2:     #090d1f;
+  --bg3:     #0d1130;
+  --cyan:    #00e5ff;
+  --purple:  #a855f7;
+  --gold:    #f59e0b;
+  --green:   #10b981;
+  --red:     #f43f5e;
+  --text:    #e2e8f0;
+  --muted:   #64748b;
+  --sub:     #94a3b8;
+  --card:    rgba(9,13,31,0.82);
+  --border:  rgba(0,229,255,0.1);
+  --bh:      rgba(0,229,255,0.28);
+  --r:       14px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 68px;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── CANVAS ──────────────────────────────────────── */
+#bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ─── NAV ─────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  background: rgba(5,8,15,0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.4s;
+}
+nav.scrolled { background: rgba(5,8,15,0.92); }
+
+.nav-logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--cyan);
+}
+.nav-logo em { color: var(--purple); font-style: normal; }
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--cyan);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--cyan); }
+.nav-links a:hover::after { width: 100%; }
+
+/* ─── MAIN WRAPPER ────────────────────────────────── */
+main { position: relative; z-index: 1; }
+
+/* ─── HERO ────────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px 10vw 80px;
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.3s forwards;
+}
+
+.hero-name {
+  font-size: clamp(54px, 9vw, 108px);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 28px;
+  background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 40%, var(--cyan) 70%, var(--purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.55s forwards;
+}
+
+.hero-type-wrap {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(14px, 2vw, 19px);
+  color: var(--sub);
+  height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.9s forwards;
+}
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--cyan);
+  margin-left: 3px;
+  animation: blink 0.7s step-end infinite;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.hero-desc {
+  max-width: 480px;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--sub);
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.15s forwards;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 52px;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.4s forwards;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s;
+  border: 1px solid transparent;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.btn-fill {
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  color: #09020f;
+  font-weight: 700;
+}
+.btn-fill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(0,229,255,0.35);
+}
+.btn-ghost {
+  border-color: var(--bh);
+  color: var(--text);
+  background: rgba(255,255,255,0.03);
+}
+.btn-ghost:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(0,229,255,0.05);
+  transform: translateY(-3px);
+}
+
+.hero-online {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.65s forwards;
+}
+.dot-live {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 10vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeUp 0.8s 2.1s forwards;
+}
+.scroll-hint span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.scroll-bar {
+  width: 1px; height: 52px;
+  background: linear-gradient(180deg, var(--cyan), transparent);
+  animation: scrollPulse 2.2s ease-in-out infinite;
+}
+
+/* ─── SECTION COMMON ──────────────────────────────── */
+.section {
+  padding: 100px 10vw;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sec-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s, transform 0.7s;
+}
+.sec-eyebrow.vis { opacity: 1; transform: translateY(0); }
+
+.sec-title {
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s 0.08s, transform 0.7s 0.08s;
+}
+.sec-title.vis { opacity: 1; transform: translateY(0); }
+
+.sec-rule {
+  width: 52px; height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  margin-bottom: 56px;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: opacity 0.7s 0.18s, transform 0.7s 0.18s;
+  border-radius: 2px;
+}
+.sec-rule.vis { opacity: 1; transform: scaleX(1); }
+
+/* ─── EXPERIENCE ──────────────────────────────────── */
+.exp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.exp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.75s, transform 0.75s, border-color 0.3s, box-shadow 0.3s;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.exp-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s;
+}
+.exp-card.vis { opacity: 1; transform: translateY(0); }
+.exp-card:hover::before { transform: scaleX(1); }
+.exp-card:hover {
+  border-color: var(--bh);
+  box-shadow: 0 20px 64px rgba(0,229,255,0.07);
+  transform: translateY(-6px);
+}
+
+.exp-pill {
+  display: inline-block;
+  padding: 4px 13px;
+  border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.pill-green { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.22); }
+.pill-purple { background: rgba(168,85,247,0.1); color: var(--purple); border: 1px solid rgba(168,85,247,0.22); }
+
+.exp-company { font-size: 21px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.exp-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 0.8px;
+  margin-bottom: 5px;
+}
+.exp-loc { font-size: 12px; color: var(--muted); margin-bottom: 22px; }
+
+.exp-list { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.exp-list li {
+  font-size: 13.5px;
+  color: var(--sub);
+  padding-left: 18px;
+  position: relative;
+  line-height: 1.55;
+}
+.exp-list li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); }
+
+/* ─── PROJECTS ────────────────────────────────────── */
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+.proj-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(44px);
+  transition: opacity 0.7s, transform 0.7s, border-color 0.3s, box-shadow 0.3s;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  will-change: transform;
+  cursor: default;
+}
+.proj-card.vis { opacity: 1; transform: translateY(0); }
+.proj-card:hover {
+  border-color: var(--bh);
+  box-shadow: 0 24px 64px rgba(0,229,255,0.07), 0 0 0 1px rgba(0,229,255,0.04);
+}
+
+.proj-glow {
+  position: absolute;
+  top: -70px; right: -70px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  filter: blur(55px);
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.proj-card:hover .proj-glow { opacity: 0.18; }
+.gc { background: var(--cyan); }
+.gp { background: var(--purple); }
+.gg { background: var(--gold); }
+
+.proj-status {
+  position: absolute;
+  top: 20px; right: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.s-live   { background: rgba(16,185,129,0.08);  color: var(--green);  border: 1px solid rgba(16,185,129,0.2); }
+.s-done   { background: rgba(0,229,255,0.07);   color: var(--cyan);   border: 1px solid rgba(0,229,255,0.18); }
+.s-research { background: rgba(168,85,247,0.08); color: var(--purple); border: 1px solid rgba(168,85,247,0.2); }
+
+.proj-ico {
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.proj-title  { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.proj-sub    { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted); margin-bottom: 14px; letter-spacing: 0.3px; }
+.proj-desc   { font-size: 13.5px; color: var(--sub); line-height: 1.65; margin-bottom: 20px; }
+
+.proj-metrics {
+  display: flex; flex-direction: column; gap: 7px;
+  background: rgba(0,229,255,0.025);
+  border: 1px solid rgba(0,229,255,0.07);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+.mrow {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+.mk { color: var(--muted); }
+.mv { color: var(--cyan); }
+.mv.gld { color: var(--gold); }
+.mv.grn { color: var(--green); }
+
+.proj-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.035);
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* ─── METRICS BAR ─────────────────────────────────── */
+.nums-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s, transform 0.8s;
+}
+.nums-grid.vis { opacity: 1; transform: translateY(0); }
+
+.num-block {
+  background: var(--bg2);
+  padding: 40px 24px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+  transition: background 0.3s;
+}
+.num-block:last-child { border-right: none; }
+.num-block:hover { background: var(--bg3); }
+
+.num-val {
+  font-size: clamp(32px, 4.5vw, 54px);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.num-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+/* ─── STACK ───────────────────────────────────────── */
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+}
+.stack-chip {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 10px;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: default;
+  opacity: 0;
+  transform: scale(0.88);
+  transition: opacity 0.5s, transform 0.5s, border-color 0.3s, color 0.3s, box-shadow 0.3s;
+  backdrop-filter: blur(10px);
+}
+.stack-chip.vis { opacity: 1; transform: scale(1); }
+.stack-chip:hover {
+  border-color: rgba(168,85,247,0.4);
+  color: #fff;
+  box-shadow: 0 0 22px rgba(168,85,247,0.1);
+  transform: scale(1.07) translateY(-2px);
+}
+.chip-ico { font-size: 26px; margin-bottom: 10px; }
+
+/* ─── CONTACT ─────────────────────────────────────── */
+#contact {
+  text-align: center;
+  padding: 100px 10vw 120px;
+}
+.contact-big {
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.contact-big em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.contact-sub {
+  font-size: 15px;
+  color: var(--sub);
+  max-width: 440px;
+  margin: 0 auto 44px;
+  line-height: 1.7;
+}
+.contact-links { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.contact-foot {
+  margin-top: 88px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+}
+
+/* ─── KEYFRAMES ───────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+@keyframes dotPulse {
+  0%,100% { box-shadow: 0 0 6px var(--green); }
+  50%      { box-shadow: 0 0 14px var(--green), 0 0 24px rgba(16,185,129,0.3); }
+}
+@keyframes scrollPulse {
+  0%,100% { opacity: 1; transform: scaleY(1); }
+  50%      { opacity: 0.35; transform: scaleY(0.6); }
+}
+
+/* ─── NOISE GRAIN ─────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='280' height='280' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────── */
+@media(max-width: 900px) {
+  nav { padding: 0 24px; }
+  .nav-links { gap: 24px; }
+  .section { padding: 80px 6vw; }
+  #hero { padding: 100px 6vw 80px; }
+  .exp-grid { grid-template-columns: 1fr; }
+  .nums-grid { grid-template-columns: 1fr 1fr; }
+}
+@media(max-width: 600px) {
+  .nav-links { display: none; }
+  .nums-grid { grid-template-columns: 1fr 1fr; }
+  .num-block { padding: 28px 16px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<nav id="nav">
+  <div class="nav-logo">PJ<em>.</em></div>
+  <ul class="nav-links">
+    <li><a href="#builds">Builds</a></li>
+    <li><a href="#numbers">Numbers</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ── HERO ─────────────────────────────────────── -->
+  <section id="hero">
+    <p class="hero-eyebrow">// AI Engineer · Medical Computer Vision · Gujarat, India</p>
+    <h1 class="hero-name">Pulkit<br>Jain.</h1>
+    <div class="hero-type-wrap">
+      <span id="typetext"></span><span class="cursor"></span>
+    </div>
+    <p class="hero-desc">
+      Stereo camera surgical navigation at Arthro3D.
+      Graph neural network research. Rust chess engines.
+      I build systems where precision actually matters.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn btn-fill" href="https://www.linkedin.com/in/pulkit-jain-071996286/" target="_blank">LinkedIn</a>
+      <a class="btn btn-ghost" href="https://github.com/pulkit230405" target="_blank">GitHub</a>
+      <a class="btn btn-ghost" href="mailto:pulkitjain230405@gmail.com">Say hello</a>
+    </div>
+    <div class="hero-online">
+      <span class="dot-live"></span>
+      <span>Active · Arthro3D LLP, Ahmedabad · May 2026</span>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-bar"></div>
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <!-- ── EXPERIENCE ────────────────────────────────── -->
+  <div class="section" id="experience">
+    <p class="sec-eyebrow">// Active Missions</p>
+    <h2 class="sec-title">Where I Work</h2>
+    <div class="sec-rule"></div>
+    <div class="exp-grid">
+
+      <div class="exp-card">
+        <span class="exp-pill pill-green">Active · May 2026</span>
+        <div class="exp-company">Arthro3D LLP</div>
+        <div class="exp-role">Application Dev · System Prototyping · AI &amp; Medical Data Analysis</div>
+        <div class="exp-loc">Ahmedabad, Gujarat</div>
+        <ul class="exp-list">
+          <li>Dual Intel RealSense stereo vision system for knee replacement surgery — sub-millimetre ArUco marker tracking</li>
+          <li>35-module Python pipeline: calibration, 3D reconstruction, canal trajectory planning, clinical GUI</li>
+          <li>Mixed reality prototyping for intraoperative surgical guidance</li>
+          <li>Medical image segmentation and AI data analysis pipeline</li>
+        </ul>
+      </div>
+
+      <div class="exp-card" style="transition-delay:0.12s">
+        <span class="exp-pill pill-purple">Research · Dec 2025</span>
+        <div class="exp-company">Marwadi Univ × Gokul Hospital</div>
+        <div class="exp-role">Research Assistant — Spinal Surgery Navigation</div>
+        <div class="exp-loc">Rajkot, Gujarat</div>
+        <ul class="exp-list">
+          <li>Surgical navigation system for spinal procedures — under faculty supervision with clinical neurosurgeons</li>
+          <li>Medical image segmentation GUI integrated into clinical workflow</li>
+          <li>ArUco-based depth estimation pipeline for real-time intraoperative guidance</li>
+          <li>Direct collaboration with Gokul Hospital neurosurgery department</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── PROJECTS ───────────────────────────────────── -->
+  <div class="section" id="builds">
+    <p class="sec-eyebrow">// Project Log</p>
+    <h2 class="sec-title">What I've Built</h2>
+    <div class="sec-rule"></div>
+    <div class="proj-grid">
+
+      <!-- Stereo Nav -->
+      <div class="proj-card">
+        <div class="proj-glow gc"></div>
+        <span class="proj-status s-live">Live</span>
+        <div class="proj-ico" style="background:rgba(0,229,255,0.08)">🎯</div>
+        <div class="proj-title">Intel RealSense Stereo Nav</div>
+        <div class="proj-sub">Surgical navigation · Arthro3D · Private</div>
+        <div class="proj-desc">Dual stereo camera system for spinal and knee surgery. ArUco marker tracking guides tool placement with sub-millimetre precision in real time.</div>
+        <div class="proj-metrics">
+          <div class="mrow"><span class="mk">Pipeline modules</span><span class="mv">35</span></div>
+          <div class="mrow"><span class="mk">Camera resolution</span><span class="mv">1280 × 720 (IR stereo)</span></div>
+          <div class="mrow"><span class="mk">ArUco configs</span><span class="mv">IDs 41, 47, 145, 158</span></div>
+          <div class="mrow"><span class="mk">Clinical site</span><span class="mv gld">Gokul Hospital, Rajkot</span></div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag">Python</span><span class="tag">OpenCV</span><span class="tag">PyRealSense2</span><span class="tag">VTK</span><span class="tag">PyVista</span><span class="tag">PyQt5</span>
+        </div>
+      </div>
+
+      <!-- RAE-GNN -->
+      <div class="proj-card" style="transition-delay:0.1s">
+        <div class="proj-glow gp"></div>
+        <span class="proj-status s-research">Research</span>
+        <div class="proj-ico" style="background:rgba(168,85,247,0.08)">🧠</div>
+        <div class="proj-title">RAE-GNN</div>
+        <div class="proj-sub">Robust Adaptive Explainable Graph Neural Network</div>
+        <div class="proj-desc">Novel 4-layer GNN with a learned meta-controller. Handles temporal graphs with feature/structure robustness, adaptive diffusion, and counterfactual explainability.</div>
+        <div class="proj-metrics">
+          <div class="mrow"><span class="mk">Graph scale</span><span class="mv">23K nodes · 223K edges</span></div>
+          <div class="mrow"><span class="mk">Temporal snapshots</span><span class="mv">5</span></div>
+          <div class="mrow"><span class="mk">Training time (CPU)</span><span class="mv gld">528s (8.8 min)</span></div>
+          <div class="mrow"><span class="mk">Convergence rate</span><span class="mv grn">100% monotonic</span></div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag">PyTorch Geometric</span><span class="tag">GNN</span><span class="tag">TGB</span><span class="tag">Paper →</span>
+        </div>
+      </div>
+
+      <!-- SkillWave -->
+      <div class="proj-card" style="transition-delay:0.2s">
+        <div class="proj-glow gg"></div>
+        <span class="proj-status s-done">Complete</span>
+        <div class="proj-ico" style="background:rgba(245,158,11,0.08)">📊</div>
+        <div class="proj-title">SkillWave</div>
+        <div class="proj-sub">AI-Based Skill Demand Predictor · Full Stack</div>
+        <div class="proj-desc">Full-stack platform indexing 50K+ job listings to forecast which technical skills are trending. ML core runs time-series demand forecasting.</div>
+        <div class="proj-metrics">
+          <div class="mrow"><span class="mk">Jobs indexed</span><span class="mv gld">50,000+</span></div>
+          <div class="mrow"><span class="mk">REST endpoints</span><span class="mv">18 across 4 modules</span></div>
+          <div class="mrow"><span class="mk">Auth system</span><span class="mv">JWT access + refresh</span></div>
+          <div class="mrow"><span class="mk">Deployment</span><span class="mv grn">Docker compose</span></div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag">React 18</span><span class="tag">TypeScript</span><span class="tag">Flask</span><span class="tag">MongoDB</span><span class="tag">Docker</span>
+        </div>
+      </div>
+
+      <!-- Chess Engine -->
+      <div class="proj-card" style="transition-delay:0.3s">
+        <div class="proj-glow gc"></div>
+        <span class="proj-status s-done">Complete</span>
+        <div class="proj-ico" style="background:rgba(0,229,255,0.08)">♟️</div>
+        <div class="proj-title">GraphChessEngine</div>
+        <div class="proj-sub">Spectral graph-theoretic chess AI · Rust + WASM</div>
+        <div class="proj-desc">Chess engine that models board positions as attack-defence graphs and evaluates moves using Laplacian eigenvalue metrics. Runs in any browser via WASM.</div>
+        <div class="proj-metrics">
+          <div class="mrow"><span class="mk">Search speed</span><span class="mv gld">1.5M nodes/sec</span></div>
+          <div class="mrow"><span class="mk">Evaluation method</span><span class="mv">Laplacian λ₂ metrics</span></div>
+          <div class="mrow"><span class="mk">Optimisation</span><span class="mv">Alpha-beta + Zobrist</span></div>
+          <div class="mrow"><span class="mk">Runtime</span><span class="mv grn">WebAssembly (browser)</span></div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag">Rust</span><span class="tag">WebAssembly</span><span class="tag">Graph Theory</span>
+        </div>
+      </div>
+
+      <!-- U-Net -->
+      <div class="proj-card" style="transition-delay:0.4s">
+        <div class="proj-glow gp"></div>
+        <span class="proj-status s-research">Paper →</span>
+        <div class="proj-ico" style="background:rgba(168,85,247,0.08)">🔬</div>
+        <div class="proj-title">Lightweight U-Net</div>
+        <div class="proj-sub">Modified medical image segmentation model</div>
+        <div class="proj-desc">Parameter-efficient CNN that hits competitive segmentation accuracy at 99.7% fewer parameters than standard U-Net. Designed for edge medical devices.</div>
+        <div class="proj-metrics">
+          <div class="mrow"><span class="mk">Parameters</span><span class="mv gld">~100K</span></div>
+          <div class="mrow"><span class="mk">Standard U-Net</span><span class="mv">~31M params</span></div>
+          <div class="mrow"><span class="mk">Size reduction</span><span class="mv grn">99.7% smaller</span></div>
+          <div class="mrow"><span class="mk">Target use</span><span class="mv">Edge medical devices</span></div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag">TensorFlow</span><span class="tag">U-Net</span><span class="tag">Medical CV</span>
+        </div>
+      </div>
+
+      <!-- Emotion -->
+      <div class="proj-card" style="transition-delay:0.5s">
+        <div class="proj-glow gg"></div>
+        <span class="proj-status s-done">Complete</span>
+        <div class="proj-ico" style="background:rgba(245,158,11,0.08)">🎭</div>
+        <div class="proj-title">Emotion Detection + IoT</div>
+        <div class="proj-sub">Real-time CV with Arduino physical feedback</div>
+        <div class="proj-desc">Live facial emotion recognition with a physical feedback loop — Arduino-controlled LEDs and buzzer respond to detected emotions from the webcam stream.</div>
+        <div class="proj-metrics">
+          <div class="mrow"><span class="mk">Input</span><span class="mv">Live camera feed</span></div>
+          <div class="mrow"><span class="mk">Physical output</span><span class="mv">Arduino LED + buzzer</span></div>
+          <div class="mrow"><span class="mk">Model</span><span class="mv">Keras CNN</span></div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag">Keras</span><span class="tag">OpenCV</span><span class="tag">Arduino</span><span class="tag">MediaPipe</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── NUMBERS ────────────────────────────────────── -->
+  <div class="section" id="numbers">
+    <p class="sec-eyebrow">// Benchmark Data</p>
+    <h2 class="sec-title">Numbers That Matter</h2>
+    <div class="sec-rule"></div>
+    <div class="nums-grid">
+      <div class="num-block">
+        <div class="num-val" data-target="1500000" data-fmt="M" data-suffix="/s">0</div>
+        <div class="num-label">chess nodes/sec</div>
+      </div>
+      <div class="num-block">
+        <div class="num-val" data-target="35" data-fmt="plain" data-suffix="">0</div>
+        <div class="num-label">surgical nav modules</div>
+      </div>
+      <div class="num-block">
+        <div class="num-val" data-target="99.7" data-fmt="pct" data-suffix="%">0</div>
+        <div class="num-label">U-Net size reduction</div>
+      </div>
+      <div class="num-block">
+        <div class="num-val" data-target="50000" data-fmt="K" data-suffix="K+">0</div>
+        <div class="num-label">jobs indexed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STACK ──────────────────────────────────────── -->
+  <div class="section" id="stack">
+    <p class="sec-eyebrow">// Technology</p>
+    <h2 class="sec-title">Arsenal</h2>
+    <div class="sec-rule"></div>
+    <div class="stack-grid">
+      <div class="stack-chip"><div class="chip-ico">🐍</div>Python</div>
+      <div class="stack-chip"><div class="chip-ico">🦀</div>Rust</div>
+      <div class="stack-chip"><div class="chip-ico">⚡</div>C++</div>
+      <div class="stack-chip"><div class="chip-ico">📦</div>TypeScript</div>
+      <div class="stack-chip"><div class="chip-ico">🧠</div>PyTorch</div>
+      <div class="stack-chip"><div class="chip-ico">🔥</div>TensorFlow</div>
+      <div class="stack-chip"><div class="chip-ico">👁️</div>OpenCV</div>
+      <div class="stack-chip"><div class="chip-ico">📊</div>PyG</div>
+      <div class="stack-chip"><div class="chip-ico">🏥</div>VTK</div>
+      <div class="stack-chip"><div class="chip-ico">📷</div>RealSense</div>
+      <div class="stack-chip"><div class="chip-ico">⚛️</div>React 18</div>
+      <div class="stack-chip"><div class="chip-ico">🌶️</div>Flask</div>
+      <div class="stack-chip"><div class="chip-ico">🍃</div>MongoDB</div>
+      <div class="stack-chip"><div class="chip-ico">🐳</div>Docker</div>
+      <div class="stack-chip"><div class="chip-ico">🌐</div>WASM</div>
+      <div class="stack-chip"><div class="chip-ico">📐</div>ArUco</div>
+    </div>
+  </div>
+
+  <!-- ── CONTACT ────────────────────────────────────── -->
+  <section id="contact">
+    <p class="sec-eyebrow" style="justify-content:center;display:flex;opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s">// Open Channel</p>
+    <h2 class="contact-big">Let's build<br><em>something real.</em></h2>
+    <p class="contact-sub">Medical AI, computer vision, GNN research, Rust, or just chess. All conversations welcome.</p>
+    <div class="contact-links">
+      <a class="btn btn-fill" href="https://www.linkedin.com/in/pulkit-jain-071996286/" target="_blank">LinkedIn</a>
+      <a class="btn btn-ghost" href="mailto:pulkitjain230405@gmail.com">pulkitjain230405@gmail.com</a>
+      <a class="btn btn-ghost" href="https://github.com/pulkit230405" target="_blank">GitHub</a>
+    </div>
+    <p class="contact-foot">PULKIT JAIN · GUJARAT, INDIA · 2026</p>
+  </section>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  THREE.JS  — particle constellation
+// ═══════════════════════════════════════════════════
+const canvas  = document.getElementById('bg');
+const scene   = new THREE.Scene();
+const camera  = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+camera.position.z = 5;
+
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+// particles
+const N  = 140;
+const positions = new Float32Array(N * 3);
+const velocities = new Float32Array(N * 3);
+for (let i = 0; i < N; i++) {
+  positions[i*3]   = (Math.random() - 0.5) * 22;
+  positions[i*3+1] = (Math.random() - 0.5) * 14;
+  positions[i*3+2] = (Math.random() - 0.5) * 7;
+  velocities[i*3]   = (Math.random() - 0.5) * 0.0018;
+  velocities[i*3+1] = (Math.random() - 0.5) * 0.0018;
+  velocities[i*3+2] = (Math.random() - 0.5) * 0.0009;
+}
+const ptGeo = new THREE.BufferGeometry();
+ptGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const ptMat = new THREE.PointsMaterial({ color: 0x00e5ff, size: 0.045, transparent: true, opacity: 0.6, sizeAttenuation: true });
+scene.add(new THREE.Points(ptGeo, ptMat));
+
+// connection lines
+const MAX_LINES = N * N;
+const linePos = new Float32Array(MAX_LINES * 6);
+const lineGeo = new THREE.BufferGeometry();
+lineGeo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
+const lineMat = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.07 });
+const lineSegs = new THREE.LineSegments(lineGeo, lineMat);
+scene.add(lineSegs);
+
+let mX = 0, mY = 0, tX = 0, tY = 0;
+document.addEventListener('mousemove', e => {
+  mX = (e.clientX/innerWidth  - 0.5) * 0.9;
+  mY = -(e.clientY/innerHeight - 0.5) * 0.55;
+});
+
+const THRESH = 4.2, THRESH2 = THRESH * THRESH;
+function updateLines() {
+  let lc = 0;
+  const p = ptGeo.attributes.position.array;
+  for (let i = 0; i < N && lc < MAX_LINES - 1; i++) {
+    for (let j = i+1; j < N && lc < MAX_LINES - 1; j++) {
+      const dx = p[i*3]-p[j*3], dy = p[i*3+1]-p[j*3+1], dz = p[i*3+2]-p[j*3+2];
+      if (dx*dx + dy*dy + dz*dz < THRESH2) {
+        linePos[lc*6]   = p[i*3];   linePos[lc*6+1] = p[i*3+1]; linePos[lc*6+2] = p[i*3+2];
+        linePos[lc*6+3] = p[j*3];   linePos[lc*6+4] = p[j*3+1]; linePos[lc*6+5] = p[j*3+2];
+        lc++;
+      }
+    }
+  }
+  lineGeo.setDrawRange(0, lc*2);
+  lineGeo.attributes.position.needsUpdate = true;
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  const p = ptGeo.attributes.position.array;
+  for (let i = 0; i < N; i++) {
+    p[i*3]   += velocities[i*3];
+    p[i*3+1] += velocities[i*3+1];
+    p[i*3+2] += velocities[i*3+2];
+    if (Math.abs(p[i*3])   > 11) velocities[i*3]   *= -1;
+    if (Math.abs(p[i*3+1]) > 7)  velocities[i*3+1] *= -1;
+    if (Math.abs(p[i*3+2]) > 3.5) velocities[i*3+2] *= -1;
+  }
+  ptGeo.attributes.position.needsUpdate = true;
+  updateLines();
+  tX += (mX - tX) * 0.04;
+  tY += (mY - tY) * 0.04;
+  scene.rotation.y = tX * 0.14;
+  scene.rotation.x = tY * 0.14;
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ═══════════════════════════════════════════════════
+//  TYPEWRITER
+// ═══════════════════════════════════════════════════
+const phrases = [
+  'Building AI that surgeons trust.',
+  'Stereo vision · Graph nets · Rust.',
+  'Precision is the whole point.',
+  'Open to research & hard problems.'
+];
+let pi = 0, ci = 0, deleting = false;
+const typeEl = document.getElementById('typetext');
+
+function type() {
+  const cur = phrases[pi];
+  if (!deleting) {
+    typeEl.textContent = cur.slice(0, ++ci);
+    if (ci === cur.length) { deleting = true; setTimeout(type, 2000); return; }
+    setTimeout(type, 48);
+  } else {
+    typeEl.textContent = cur.slice(0, --ci);
+    if (ci === 0) { deleting = false; pi = (pi+1) % phrases.length; setTimeout(type, 320); return; }
+    setTimeout(type, 24);
+  }
+}
+setTimeout(type, 1200);
+
+// ═══════════════════════════════════════════════════
+//  SCROLL ANIMATIONS
+// ═══════════════════════════════════════════════════
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll(
+  '.sec-eyebrow,.sec-title,.sec-rule,.exp-card,.proj-card,.nums-grid,.stack-chip'
+).forEach(el => obs.observe(el));
+
+// stagger stack chips
+document.querySelectorAll('.stack-chip').forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.045) + 's';
+});
+
+// contact eyebrow
+const contactEye = document.querySelector('#contact .sec-eyebrow');
+if (contactEye) obs.observe(contactEye);
+
+// nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', scrollY > 60);
+}, { passive: true });
+
+// ═══════════════════════════════════════════════════
+//  3D TILT on project cards
+// ═══════════════════════════════════════════════════
+document.querySelectorAll('.proj-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r  = card.getBoundingClientRect();
+    const rx = ((e.clientY - r.top)  / r.height - 0.5) * -12;
+    const ry = ((e.clientX - r.left) / r.width  - 0.5) * 12;
+    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-6px)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+});
+
+// ═══════════════════════════════════════════════════
+//  COUNTER ANIMATIONS
+// ═══════════════════════════════════════════════════
+function fmt(val, format, suffix) {
+  if (format === 'M')   return (val / 1000000).toFixed(1) + 'M' + suffix;
+  if (format === 'K')   return Math.round(val / 1000) + suffix;
+  if (format === 'pct') return val.toFixed(1) + suffix;
+  return Math.round(val) + suffix;
+}
+
+const cntObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el      = e.target;
+    const target  = parseFloat(el.dataset.target);
+    const format  = el.dataset.fmt;
+    const suffix  = el.dataset.suffix || '';
+    const dur     = 1800;
+    const t0      = performance.now();
+    const tick = now => {
+      const progress = Math.min((now - t0) / dur, 1);
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      el.textContent = fmt(eased * target, format, suffix);
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    cntObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-target]').forEach(el => cntObs.observe(el));
+</script>
+</body>
+</html>
